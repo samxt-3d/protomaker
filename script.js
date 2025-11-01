@@ -50,6 +50,7 @@ function sendEmail(){
     return;
   }
 
+  console.log('About to call emailjs.send with service: service_027011e, template: template_qoh446q');
   emailjs.send('service_027011e', 'template_qoh446q', templateParams)
     .then(function(response) {
       console.log('Email sent successfully:', response);
@@ -57,7 +58,10 @@ function sendEmail(){
       form.reset();
     }, function(error) {
       console.error('Email send failed:', error);
-      console.error('Error details:', error.text || error.message || error);
+      console.error('Error status:', error.status);
+      console.error('Error text:', error.text);
+      console.error('Full error object:', error);
+      alert('Email send failed. Check console for details.');
       show('Failed to send message. Please try again.', true);
     });
 }
