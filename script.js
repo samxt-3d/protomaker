@@ -1,6 +1,8 @@
 
 // Language modal
+console.log('Script loaded, initializing...');
 const modal = document.querySelector('#lang-modal');
+console.log('Modal element:', modal);
 document.querySelector('#open-lang')?.addEventListener('click', ()=> modal.showModal());
 document.querySelector('#close-lang')?.addEventListener('click', ()=> modal.close());
 Array.from(document.querySelectorAll('[data-lang]')).forEach(b=>{
@@ -9,14 +11,18 @@ Array.from(document.querySelectorAll('[data-lang]')).forEach(b=>{
 
 // Initialize EmailJS
 (function(){
+  console.log('Initializing EmailJS...');
   emailjs.init({
-    publicKey: "61Rz4pNz7NnOzC5Ig", 
+    publicKey: "61Rz4pNz7NnOzC5Ig",
   });
+  console.log('EmailJS initialized successfully.');
 })();
 
 // Contact form
 const form = document.querySelector('#contact-form');
+console.log('Form element found:', form);
 const notice = document.querySelector('#form-msg');
+console.log('Notice element found:', notice);
 function show(msg, err){ if(!notice) return; notice.style.display='block'; notice.textContent=msg; notice.style.color = err?'#ff8fb0':'#22c55e'; setTimeout(()=>notice.style.display='none', 4000); }
 
 function sendEmail(){
@@ -25,6 +31,8 @@ function sendEmail(){
   const email = (document.querySelector('#email')?.value || '').trim();
   const type = (document.querySelector('#type')?.value || '').trim();
   const message = (document.querySelector('#message')?.value || '').trim();
+
+  console.log('Form values extracted:', { name, email, type, message });
 
   const templateParams = {
     from_name: name,
@@ -36,13 +44,20 @@ function sendEmail(){
 
   console.log('Sending email with params:', templateParams);
 
-  emailjs.send('service_9zhgup4', 'template_qoh446q', templateParams) 
+  if (typeof emailjs === 'undefined') {
+    console.error('EmailJS is not loaded or initialized properly.');
+    show('Email service not available. Please try again later.', true);
+    return;
+  }
+
+  emailjs.send('service_027011e', 'template_qoh446q', templateParams)
     .then(function(response) {
       console.log('Email sent successfully:', response);
       show('Message sent successfully!', false);
       form.reset();
     }, function(error) {
       console.error('Email send failed:', error);
+      console.error('Error details:', error.text || error.message || error);
       show('Failed to send message. Please try again.', true);
     });
 }
@@ -61,6 +76,7 @@ function openMail(){
 }
 
 form?.addEventListener('submit', (e)=>{
+  console.log('Form submit event triggered');
   e.preventDefault();
   console.log('Form submitted, preventing default');
   const name = (document.querySelector('#name')?.value || '').trim();
@@ -75,6 +91,8 @@ form?.addEventListener('submit', (e)=>{
   console.log('Validation passed, calling sendEmail');
   sendEmail();
 });
+
+console.log('Event listener attached to form:', form);
 document.querySelector('#mailto')?.addEventListener('click', openMail);
 
 // Year
